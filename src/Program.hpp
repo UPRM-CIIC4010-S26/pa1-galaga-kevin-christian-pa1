@@ -36,6 +36,6 @@ class Program {
         void KeyInputs();
         void PlayerReset();
         void Reset();
-          
+
         ~Program() {}
 };
