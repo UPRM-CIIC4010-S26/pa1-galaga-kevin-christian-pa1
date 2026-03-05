@@ -37,7 +37,10 @@ void Program::Update() {
     pauseFrames = std::max(pauseFrames - 1, 0);
 
     if (!startup && !paused && !gameOver && pauseFrames <= 0) {
-        Enemy::ManageEnemies(player->hitBox);
+
+        // Add points gained to the total score
+
+        score += Enemy::ManageEnemies(player->hitBox);
         StdEnemy::attackReset();
         ManageEnemyRespawns();
         player->update();
@@ -75,6 +78,10 @@ void Program::Update() {
 
 void Program::Draw() {
     background.Draw();
+
+    std::string scoreText = "Score " + std::to_string(score);
+    DrawText(scoreText.c_str(), 10, 10, 24, WHITE);
+
     if (pauseFrames <= 0 && !gameOver) player->draw();
     for (Animation& a : Animation::animations) a.draw();
 
@@ -159,6 +166,7 @@ void Program::KeyInputs() {
     if (!paused && !startup && IsKeyPressed('O')) gameOver = !gameOver;
     if (!gameOver && !paused && IsKeyPressed('I')) startup = !startup;
     if (IsKeyPressed('H')) HitBox::drawHitbox = !HitBox::drawHitbox;
+    if (IsKeyPressed('K')) score += 500;
     
     if (gameOver && IsKeyPressed(KEY_ENTER)) {
         gameOver = false;
@@ -194,5 +202,6 @@ void Program::Reset() {
     count = 0;
     delay = 0;
     lives = 3;
+    score = 0;
     Program();
 }
