@@ -73,13 +73,11 @@ void Program::Update() {
 
         }
         
-        if(lives <= 5 && (score/1000) != lastLifeScore){
+        if((score/1000) != lastLifeScore){
             lastLifeScore++;
-            lives++;
-        }
-        //temporary fix
-        if(lives >= 5){
-            lives = 5;
+            if(lives < 5){
+                lives++;
+            }
         }
 
         if (lives <= 0 && pauseFrames <= 0) gameOver = true;
