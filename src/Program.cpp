@@ -29,6 +29,9 @@ Program::Program() {
     }
 }
 
+ //this variable will store score in terms of thousands ( 1 for 1k, 2 for 2k, and so on)
+int lastLifeScore = 0;
+
 void Program::Update() {
     for (Animation& a : Animation::animations) a.update();
     for (int i = 0; i < Animation::animations.size(); i++) {
@@ -69,6 +72,15 @@ void Program::Update() {
             }
 
         }
+        
+        if(lives <= 5 && (score/1000) != lastLifeScore){
+            lastLifeScore++;
+            lives++;
+        }
+        //temporary fix
+        if(lives >= 5){
+            lives = 5;
+        }
 
         if (lives <= 0 && pauseFrames <= 0) gameOver = true;
         Projectile::CleanProjectiles();
@@ -86,9 +98,9 @@ void Program::Draw() {
     for (Animation& a : Animation::animations) a.draw();
 
     for (int i = 0; i < lives; i++) {
-         DrawTexturePro(ImageManager::SpriteSheet, Rectangle{0, 0, 17, 18}, 
+        DrawTexturePro(ImageManager::SpriteSheet, Rectangle{0, 0, 17, 18}, 
                    Rectangle{10.0f + i * 30, GetScreenHeight() - 30.0f, 20, 20}, 
-                   Vector2{0, 0}, 0, WHITE);
+                    Vector2{0, 0}, 0, WHITE);
     }
 
 
@@ -100,12 +112,16 @@ void Program::Draw() {
     if (gameOver) DrawGameOver();
 }
 
+//this will store respawn cooldown score (in terms of 1000... 1 for 1000, 2 for 2000...)
+int lastRespawnScore = 0;
+//this will control respawning speed by dividing base value
+float speedFactor = 1;
 void Program::ManageEnemyRespawns() {
     delay = std::max(delay - 1, 0);
 
     respawnCooldown -= 1;
     if (respawnCooldown <= 0) {
-        respawnCooldown = 1080;
+        respawnCooldown = 1080/speedFactor;
         for (std::pair<std::pair<float, float>, Enemy*>& p : Enemy::enemies) {
             if (!p.second && p.first.second != 150) {
                 int eType = GetRandomValue(1, 3);
@@ -140,6 +156,11 @@ void Program::ManageEnemyRespawns() {
 
         count--;
         delay = 20;
+    }
+    
+    if ((score/1000) != lastRespawnScore){
+        lastRespawnScore++;
+        speedFactor+=2;
     }
 }
 
