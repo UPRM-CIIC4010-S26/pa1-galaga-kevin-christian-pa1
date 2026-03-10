@@ -58,10 +58,22 @@ class Enemy {
                         if (p2.ID != 1 && HitBox::Collision(p.second->hitBox, p2.getHitBox())) {
                             p.second->health--;
                             p2.del = true;
+
+                            // Play hit sound if the enemy survives the projectile
+
+                            if (p.second->health > 0)
+                            {
+                                PlaySound(SoundManager::hit);
+                            }
                         }
                     }
 
                     if (p.second->health <= 0) {
+
+                        // Play death sound when the enemy is defeated
+
+                        PlaySound(SoundManager::dead);
+
                         pointsGained += p.second->points;
                         Animation::animations.push_back(
                             Animation(p.second->position.first, p.second->position.second, 155, 0, 33, 33, 30, 30, 4, ImageManager::SpriteSheet)
