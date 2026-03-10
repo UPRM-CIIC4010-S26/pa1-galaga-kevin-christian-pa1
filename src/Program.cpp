@@ -1,5 +1,12 @@
 #include "Program.hpp"
 
+bool Program::barFull = false;
+bool Program::boostActivated = false;
+int Program::boostValue = 0;
+int Program::boostMax = 2000;
+int Program::blinkTimer = 0;
+
+
 Program::Program() {
     Background::sideWalls = std::pair<HitBox, HitBox>{ 
         HitBox(0, 0, 10, GetScreenHeight()), 
@@ -29,10 +36,8 @@ Program::Program() {
     }
 }
 
- //this variable will store score in terms of thousands ( 1 for 1k, 2 for 2k, and so on)
-int lastLifeScore = 0;
-
 void Program::Update() {
+    
     for (Animation& a : Animation::animations) a.update();
     for (int i = 0; i < Animation::animations.size(); i++) {
         if (Animation::animations[i].done) Animation::animations.erase(Animation::animations.begin() + i);
@@ -79,6 +84,33 @@ void Program::Update() {
                 lives++;
             }
         }
+        
+        //boost Bonus implementation
+        if(score/100 != boostValue){
+            if(boostValue < boostMax/100 && !barFull){
+                //Increase bar (capped at 2k points)
+                boostValue++;
+                if(boostValue == boostMax/100){
+                    barFull = true;
+                    boostValue = boostMax/100;
+                    blinkTimer = 3*60;
+                    blinkPhase = 0;
+                }else if(boostActivated){
+                    barFull = false;
+                    boostValue = 0;
+                    blinkTimer = 0;
+                    boostActivated = false;
+                }
+            }
+        }
+        
+        //Blinking
+        if (blinkTimer > 0) {
+            blinkTimer--;
+            if (blinkTimer % 15 == 0)   
+                blinkPhase ^= 1;//toggle
+        }
+
 
         if (lives <= 0 && pauseFrames <= 0) gameOver = true;
         Projectile::CleanProjectiles();
@@ -101,6 +133,20 @@ void Program::Draw() {
                     Vector2{0, 0}, 0, WHITE);
     }
 
+    //Draw bar background
+    float width = 200.0f;
+    DrawRectangle(10, 40, width, 20, GRAY);
+    //Update bar filling
+    float filling = width * ((float)boostValue / ((float)boostMax/100.0f));
+    //Draw only if blink state visible or bar not full
+    if (!barFull || blinkPhase == 0)
+        DrawRectangle(10, 40, filling, 20, YELLOW);
+    
+    //Indicate bar is full
+    if (barFull) {
+        Color textCol = (blinkPhase == 0 ? YELLOW : GRAY);
+        DrawText("AVAILABLE", 10 + width + 5, 40, 20, textCol);
+    }
 
     for (Projectile p : Projectile::projectiles) p.draw();
     for (std::pair<std::pair<float, float>, Enemy*>& p : Enemy::enemies) if (p.second) p.second->draw();
@@ -110,10 +156,6 @@ void Program::Draw() {
     if (gameOver) DrawGameOver();
 }
 
-//this will store respawn cooldown score (in terms of 1000... 1 for 1000, 2 for 2000...)
-int lastRespawnScore = 0;
-//this will control respawning speed by dividing base value
-float speedFactor = 1;
 void Program::ManageEnemyRespawns() {
     delay = std::max(delay - 1, 0);
 
@@ -197,7 +239,6 @@ void Program::KeyInputs() {
     }
 
     if (!startup && !paused && !gameOver && pauseFrames <= 0) player->keyInputs();
-   
 }
 
 void Program::PlayerReset() {

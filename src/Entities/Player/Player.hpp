@@ -23,4 +23,5 @@ class Player {
         void update();
         void keyInputs();
         void attack();
+        void activateBoost();
 };

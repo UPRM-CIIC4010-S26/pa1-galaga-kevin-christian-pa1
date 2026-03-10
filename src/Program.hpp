@@ -25,7 +25,26 @@ class Program {
         bool paused = false;
         bool gameOver = false;
 
+        //this variable will store score in terms of thousands ( 1 for 1k, 2 for 2k, and so on)
+        int lastLifeScore = 0;
+        //this will store respawn cooldown score (in terms of 1000... 1 for 1000, 2 for 2000...)
+        int lastRespawnScore = 0;
+        //this will control respawning speed by dividing base value
+        float speedFactor = 1;
+        //this variable controls the boost bar
+        int blinkPhase = 0;
+
+        
+
+        
+
     public:
+        static bool barFull;
+        static int boostValue;
+        static int boostMax;
+        static int blinkTimer;
+        static bool boostActivated;
+
         Program();
 
         void Update();
