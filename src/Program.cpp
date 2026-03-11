@@ -68,6 +68,8 @@ void Program::Update() {
                 p.second->health = 0;
                 pauseFrames = 120;
                 lives--;
+                score-=1000;
+                PlaySound(SoundManager::lifeLost);
             }
         }
 
@@ -98,6 +100,7 @@ void Program::Update() {
                     boostValue = boostMax/100;
                     blinkTimer = 3*60;
                     blinkPhase = 0;
+                    PlaySound(SoundManager::boostAvailable);
                 }
             }
         }
@@ -109,6 +112,11 @@ void Program::Update() {
             boostActivated = false;
             scoreAfterBoost = score;
             playerHit = false;
+        }
+
+        //gameOver if score negative
+        if(score < 0){
+            gameOver = true;
         }
         
         //Blinking
@@ -259,6 +267,8 @@ void Program::PlayerReset() {
     pauseFrames = 120;
     lives--;
     playerHit = true;
+    score-=1000;
+    PlaySound(SoundManager::lifeLost);
 }
 
 void Program::Reset() {
