@@ -33,6 +33,8 @@ void Projectile::CleanProjectiles() {
 void Projectile::ProjectileCollision() {
     for (int i = 0; i < projectiles.size(); i++) {
         for (int j = i + 1; j < projectiles.size(); j++) {
+            if (projectiles[i].ID == projectiles[j].ID)  // do not delete bullets from same owner
+                continue;  
             if (HitBox::Collision(projectiles[i].getHitBox(), projectiles[j].getHitBox())) {
                 projectiles[i].del = true;
                 projectiles[j].del = true;

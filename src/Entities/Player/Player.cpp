@@ -30,13 +30,39 @@ void Player::update() {
             this->position.first += collision.first + 1;
         }
     }
+
+    //boost shots (5 consecutive arcs)
+    if (boostShotsRemaining > 0) {
+
+    if (boostDelay <= 0) {
+
+        const int n = 10;
+        const float spread = 60.0f;
+
+        const int centreX = position.first + hitBox.box.width / 2;
+        const int centreY = position.second;
+
+        for (int k = 0; k < n; k++) {
+
+            float angle = 90.0f + spread * ((k / float(n-1)) - 0.5f);//do an arc with spreaded bullets
+
+            Projectile::projectiles.push_back(
+                Projectile(centreX, centreY, angle, 0)
+            );
+        }
+
+        boostShotsRemaining--;
+        boostDelay = boostDelayFrames;
+    }
+    boostDelay--;
+    }
 }
 
 void Player::keyInputs() {
     float dt = GetFrameTime();
     if (IsKeyDown('A')) this->position.first -= this->speed;
     if (IsKeyDown('D')) this->position.first += this->speed;
-    if (IsKeyDown(KEY_SPACE)) this->attack();
+    if (IsKeyPressed(KEY_SPACE)) this->attack();
     if(IsKeyDown('B')) this->activateBoost();
 
 }
@@ -46,24 +72,17 @@ void Player::keyInputs() {
 
 void Player::attack() {
     if (cooldown <= 0) {
-        Projectile::projectiles.push_back(Projectile(position.first + + this->hitBox.box.width / 2, position.second, 0));
+        Projectile::projectiles.push_back(Projectile(position.first + this->hitBox.box.width / 2, position.second, 0));
         PlaySound(SoundManager::shoot);
         cooldown = 30;
     }
 }
 void Player::activateBoost() {
-    if (cooldown <= 0) {
-        for(int i = 0; i < 10; i++){
-            Projectile::projectiles.push_back(
-                Projectile(position.first + this->hitBox.box.width/2,
-                        position.second,
-                        0)
-            );
-            PlaySound(SoundManager::shoot);
-            i++;
-            cooldown = 5;   
-        }
-        cooldown = 0;
+    if (Program::barFull && boostShotsRemaining == 0) {
+        PlaySound(SoundManager::boostShot);
+        Program::boostActivated = true;
 
+        boostShotsRemaining = 5;   // total arcs to fire
+        boostDelay = 0;            // fire first immediately
     }
 }

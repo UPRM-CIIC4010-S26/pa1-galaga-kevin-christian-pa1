@@ -44,6 +44,8 @@ class Program {
         static int boostMax;
         static int blinkTimer;
         static bool boostActivated;
+        static int scoreAfterBoost;
+        static bool playerHit;
 
         Program();
 

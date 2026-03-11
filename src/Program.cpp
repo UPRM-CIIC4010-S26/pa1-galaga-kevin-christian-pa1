@@ -2,9 +2,11 @@
 
 bool Program::barFull = false;
 bool Program::boostActivated = false;
+bool Program::playerHit = false;
 int Program::boostValue = 0;
 int Program::boostMax = 2000;
 int Program::blinkTimer = 0;
+int Program::scoreAfterBoost = 0;
 
 
 Program::Program() {
@@ -61,6 +63,7 @@ void Program::Update() {
 
                 PlaySound(SoundManager::gameOver);
                 Projectile::projectiles.clear();
+                playerHit = true;
                 player->position.first = GetScreenWidth() / 2 - 15;
                 p.second->health = 0;
                 pauseFrames = 120;
@@ -84,9 +87,9 @@ void Program::Update() {
                 lives++;
             }
         }
-        
         //boost Bonus implementation
-        if(score/100 != boostValue){
+
+        if((score - scoreAfterBoost)/100 != boostValue){
             if(boostValue < boostMax/100 && !barFull){
                 //Increase bar (capped at 2k points)
                 boostValue++;
@@ -95,13 +98,17 @@ void Program::Update() {
                     boostValue = boostMax/100;
                     blinkTimer = 3*60;
                     blinkPhase = 0;
-                }else if(boostActivated){
-                    barFull = false;
-                    boostValue = 0;
-                    blinkTimer = 0;
-                    boostActivated = false;
                 }
             }
+        }
+        
+        if(boostActivated || playerHit){
+            barFull = false;
+            boostValue = 0;
+            blinkTimer = 0;
+            boostActivated = false;
+            scoreAfterBoost = score;
+            playerHit = false;
         }
         
         //Blinking
@@ -251,6 +258,7 @@ void Program::PlayerReset() {
     player->position.first = GetScreenWidth() / 2 - 15;
     pauseFrames = 120;
     lives--;
+    playerHit = true;
 }
 
 void Program::Reset() {

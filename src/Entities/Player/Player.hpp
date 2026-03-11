@@ -8,6 +8,10 @@ class Player {
     private:
         int cooldown = 30;
         int speed = 3;
+
+        int boostShotsRemaining = 0;
+        int boostDelay = 0;
+        const int boostDelayFrames = 6; // delay between arcs
     
     public:
         std::pair<float, float> position;
