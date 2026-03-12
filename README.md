@@ -6,7 +6,6 @@
 (802-24-3614) (Kevin Arroyo Abreu) (kevin.arroyo9@upr.edu)
 (802-23-8903) (Christian L. Navarro Santana) (christian.navarro4@upr.edu)
 
-## _____________________________________________________________________________________________
 
 ## Bonus Features
 
