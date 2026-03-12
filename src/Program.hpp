@@ -34,6 +34,10 @@ class Program {
         //this variable controls the boost bar
         int blinkPhase = 0;
 
+        // Tracks if music has started
+        
+        bool bgmStarted = false;
+
         
 
         

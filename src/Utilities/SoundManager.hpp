@@ -11,6 +11,7 @@ class SoundManager {
     static inline Sound boostShot;
     static inline Sound boostAvailable;
     static inline Sound lifeLost;
+    static inline Music bgm;
 
     static void Load() {
         attack = LoadSound("audio/attack.mp3");
@@ -21,6 +22,7 @@ class SoundManager {
         boostShot = LoadSound("audio/boostShot.mp3");
         boostAvailable = LoadSound("audio/gameBonusRetro.mp3");
         lifeLost = LoadSound("audio/lifeLost.mp3");
+        bgm = LoadMusicStream("audio/bgm.mp3");
     }
 
     static void Unload() {
@@ -32,5 +34,6 @@ class SoundManager {
         UnloadSound(boostShot);
         UnloadSound(boostAvailable);
         UnloadSound(lifeLost);
+        UnloadMusicStream(bgm);
     }
 };

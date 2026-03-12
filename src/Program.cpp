@@ -39,6 +39,35 @@ Program::Program() {
 }
 
 void Program::Update() {
+
+    // Start background music
+
+    if (!bgmStarted)
+    {
+        PlayMusicStream(SoundManager::bgm);
+        SoundManager::bgm.looping = true;
+        SetMusicVolume(SoundManager::bgm, 0.5f);
+        bgmStarted = true;
+    }
+
+    // Stop, pause, or resume music based on game state
+
+    if (paused || startup)
+    {
+        PauseMusicStream(SoundManager::bgm);
+    }
+    else if (!paused && !gameOver && !startup)
+    {
+        ResumeMusicStream(SoundManager::bgm);
+    }
+
+    if (gameOver)
+    {
+        StopMusicStream(SoundManager::bgm);
+        bgmStarted = false;
+    }
+
+    UpdateMusicStream(SoundManager::bgm);
     
     for (Animation& a : Animation::animations) a.update();
     for (int i = 0; i < Animation::animations.size(); i++) {
@@ -272,6 +301,11 @@ void Program::PlayerReset() {
 }
 
 void Program::Reset() {
+
+    // Stops music
+
+    StopMusicStream(SoundManager::bgm);
+
     Enemy::enemies.clear();
     StdEnemy::attackInProgress = false;
     player = new Player((GetScreenWidth() / 2) - 15, GetScreenHeight() * 0.75f);
@@ -282,4 +316,8 @@ void Program::Reset() {
     lives = 3;
     score = 0;
     Program();
+
+    // Reset Music
+
+    bgmStarted = false;
 }
