@@ -11,6 +11,8 @@ class SoundManager {
     static inline Sound boostShot;
     static inline Sound boostAvailable;
     static inline Sound lifeLost;
+    static inline Sound goVoice;
+    static inline Sound lifeUp;
     static inline Music bgm;
 
     static void Load() {
@@ -22,6 +24,8 @@ class SoundManager {
         boostShot = LoadSound("audio/boostShot.mp3");
         boostAvailable = LoadSound("audio/gameBonusRetro.mp3");
         lifeLost = LoadSound("audio/lifeLost.mp3");
+        goVoice = LoadSound("audio/gameOverVoice.mp3");
+        lifeUp = LoadSound("audio/lifeUp.mp3");
         bgm = LoadMusicStream("audio/bgm.mp3");
     }
 
@@ -34,6 +38,8 @@ class SoundManager {
         UnloadSound(boostShot);
         UnloadSound(boostAvailable);
         UnloadSound(lifeLost);
+        UnloadSound(goVoice);
+        UnloadSound(lifeUp);
         UnloadMusicStream(bgm);
     }
 };

@@ -8,6 +8,7 @@ int Program::boostMax = 2000;
 int Program::blinkTimer = 0;
 int Program::scoreAfterBoost = 0;
 int Program::boostCooldown = 0;
+int Program::totalPointsEarned = 0;
 
 
 Program::Program() {
@@ -66,6 +67,7 @@ void Program::Update() {
     {
         StopMusicStream(SoundManager::bgm);
         bgmStarted = false;
+        PlaySound(SoundManager::goVoice);
     }
 
     UpdateMusicStream(SoundManager::bgm);
@@ -78,9 +80,12 @@ void Program::Update() {
 
     if (!startup && !paused && !gameOver && pauseFrames <= 0) {
 
-        // Add points gained to the total score
+        // Add points gained to the total points earned
 
-        score += Enemy::ManageEnemies(player->hitBox);
+        int pointsGained = Enemy::ManageEnemies(player->hitBox);
+        score += pointsGained;
+        totalPointsEarned += pointsGained;
+
         StdEnemy::attackReset();
         ManageEnemyRespawns();
         player->update();
@@ -98,7 +103,9 @@ void Program::Update() {
                 p.second->health = 0;
                 pauseFrames = 120;
                 lives--;
+                boostValue = 0;
                 score/=1.5;
+                scoreAfterBoost = score; 
                 PlaySound(SoundManager::lifeLost);
             }
         }
@@ -113,13 +120,18 @@ void Program::Update() {
 
         }
         
-        int lifeThreshold = score / 1000;
-        if(lifeThreshold > lastLifeScore){
-            lastLifeScore = lifeThreshold;
-            if(lives < 5){
-                lives++;
-            }
+        int lifeThreshold = totalPointsEarned / 1000;
+
+        while (lifeThreshold > lastLifeScore) {
+        lastLifeScore++;
+        if (lives < 5) {
+            /* The `lives++` statement is incrementing the value of the variable `lives` by 1. This
+            means that it is increasing the number of lives the player has in the game. */
+            lives++;
+            PlaySound(SoundManager::lifeUp);
         }
+    }
+
         //boost Bonus implementation
 
     if (boostCooldown > 0) {
@@ -253,7 +265,7 @@ void Program::ManageEnemyRespawns() {
         delay = 20;
     }
     
-    if ((score/1000) != lastRespawnScore){
+    if ((totalPointsEarned/1000) != lastRespawnScore){
         lastRespawnScore++;
         speedFactor+=2;
     }
@@ -282,7 +294,7 @@ void Program::KeyInputs() {
     if (!paused && !startup && IsKeyPressed('O')) gameOver = !gameOver;
     if (!gameOver && !paused && IsKeyPressed('I')) startup = !startup;
     if (IsKeyPressed('H')) HitBox::drawHitbox = !HitBox::drawHitbox;
-    if (IsKeyPressed('K')) score += 500;
+    if (IsKeyPressed('K')){ score += 500; totalPointsEarned += 500;
     
     if (gameOver && IsKeyPressed(KEY_ENTER)) {
         gameOver = false;
@@ -295,6 +307,7 @@ void Program::KeyInputs() {
 
     if (!startup && !paused && !gameOver && pauseFrames <= 0) player->keyInputs();
 }
+}
 
 void Program::PlayerReset() {
     Animation::animations.push_back(
@@ -306,8 +319,10 @@ void Program::PlayerReset() {
     player->position.first = GetScreenWidth() / 2 - 15;
     pauseFrames = 120;
     lives--;
+    boostValue = 0;
     playerHit = true;
     score/=1.5;
+    scoreAfterBoost = score;
     PlaySound(SoundManager::lifeLost);
 }
 
@@ -326,6 +341,11 @@ void Program::Reset() {
     delay = 0;
     lives = 3;
     score = 0;
+    totalPointsEarned = 0;
+
+    lastLifeScore = 0;     
+    lastRespawnScore = 0;
+
     Program();
 
     // Reset Music

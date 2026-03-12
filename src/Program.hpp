@@ -53,6 +53,8 @@ class Program {
         static bool playerHit;
         //Cooldown for boost
         static int boostCooldown;
+        //tracker for total points earned (not score)
+        static int totalPointsEarned;
 
         Program();
 
