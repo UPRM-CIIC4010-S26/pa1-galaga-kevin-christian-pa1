@@ -67,7 +67,6 @@ void Program::Update() {
     {
         StopMusicStream(SoundManager::bgm);
         bgmStarted = false;
-        PlaySound(SoundManager::goVoice);
     }
 
     UpdateMusicStream(SoundManager::bgm);
@@ -178,7 +177,7 @@ void Program::Update() {
         }
 
 
-        if (lives <= 0 && pauseFrames <= 0) gameOver = true;
+        if (lives <= 0 && pauseFrames <= 0) { PlaySound(SoundManager::goVoice); gameOver = true;}
         Projectile::CleanProjectiles();
         Projectile::ProjectileCollision();
     }

@@ -1,24 +1,35 @@
 # PA1: Galaga
 * This repository is part of a Programming Assignment for the Advanced Programming Course.
 
-## Setup
-1. Clone this project
-2. Build & Run the project
-
-## Submitting Assignment
-To submit this assignment, create a Release with the branch that holds all the changes you have added. If no Release is made, the last commit to the master branch will be graded.
-Don't forget that you must also fill out an evaluation form in Moodle to consider the project submitted.
-
-## Grading
+## Team Members
 
 (802-24-3614) (Kevin Arroyo Abreu) (kevin.arroyo9@upr.edu)
 (802-23-8903) (Christian L. Navarro Santana) (christian.navarro4@upr.edu)
 
-Any project that doesn't compile will receive a 0.
+## _____________________________________________________________________________________________
 
-You MUST put you & your partner's information in this README file otherwise there will be a 5pts penalty! 
+## Bonus Features
 
-If a partner has no commits in the repositories, they will receive a 0.
+### Spread Shot Boost
+Every 2k points earned by the player will enable this option, which is launched pressing 'B'. This will shot 5 rounds of consecutive proyectiles which form an arc, enabling the player to eliminate dozens of enemies at once. 
 
-## Student Notes
-If you have any bonus specs, bonus or any details the TA's should know, you should include it here:
+#### Key Features:
+- A progress bar enables the player to estimate how many points until the next boost
+- When the player looses lifes, boost bar resets to 0
+- Points gained on the boost shot do not count towards the next boost
+
+### Score Penalty:
+Each time the player looses a life, it suffers a reduction of 1/3rd of the current score. Reaching a score of 0 means Game Over. 
+
+
+### Background Music & Additional Sound Effects
+The game is enhanced by a well-fitting music to boost the mood of the player while trying to get as much points as possible. 
+Other sound effects were added: 
+- Game Over voice
+- Extra life award
+- Score penalty 
+- Boost available
+- Spread Shot Fx
+
+
+
