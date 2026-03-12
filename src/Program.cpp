@@ -7,6 +7,7 @@ int Program::boostValue = 0;
 int Program::boostMax = 2000;
 int Program::blinkTimer = 0;
 int Program::scoreAfterBoost = 0;
+int Program::boostCooldown = 0;
 
 
 Program::Program() {
@@ -68,7 +69,7 @@ void Program::Update() {
                 p.second->health = 0;
                 pauseFrames = 120;
                 lives--;
-                score-=1000;
+                score/=1.5;
                 PlaySound(SoundManager::lifeLost);
             }
         }
@@ -83,15 +84,23 @@ void Program::Update() {
 
         }
         
-        if((score/1000) != lastLifeScore){
-            lastLifeScore++;
+        int lifeThreshold = score / 1000;
+        if(lifeThreshold > lastLifeScore){
+            lastLifeScore = lifeThreshold;
             if(lives < 5){
                 lives++;
             }
         }
         //boost Bonus implementation
 
-        if((score - scoreAfterBoost)/100 != boostValue){
+    if (boostCooldown > 0) {
+        --boostCooldown;
+        // count down every frame
+        scoreAfterBoost = score; 
+        boostValue = 0;
+    }
+
+    else if((score - scoreAfterBoost)/100 != boostValue){
             if(boostValue < boostMax/100 && !barFull){
                 //Increase bar (capped at 2k points)
                 boostValue++;
@@ -104,14 +113,15 @@ void Program::Update() {
                 }
             }
         }
-        
-        if(boostActivated || playerHit){
+        //clear bar and do not count towards bonus the bullets shot at boost
+        if ( playerHit || (boostActivated 
+                && player->getBoostShotsRemaining() == 0))
+        {
             barFull = false;
-            boostValue = 0;
             blinkTimer = 0;
-            boostActivated = false;
-            scoreAfterBoost = score;
+            boostActivated = false;                  
             playerHit = false;
+            boostValue = 0;
         }
 
         //gameOver if score negative
@@ -161,6 +171,7 @@ void Program::Draw() {
     if (barFull) {
         Color textCol = (blinkPhase == 0 ? YELLOW : GRAY);
         DrawText("AVAILABLE", 10 + width + 5, 40, 20, textCol);
+        DrawText("Press B", 30 + 20, 40, 20, GRAY);
     }
 
     for (Projectile p : Projectile::projectiles) p.draw();
@@ -267,7 +278,7 @@ void Program::PlayerReset() {
     pauseFrames = 120;
     lives--;
     playerHit = true;
-    score-=1000;
+    score/=1.5;
     PlaySound(SoundManager::lifeLost);
 }
 

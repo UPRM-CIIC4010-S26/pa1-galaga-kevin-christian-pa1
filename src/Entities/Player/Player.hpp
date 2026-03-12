@@ -16,6 +16,7 @@ class Player {
     public:
         std::pair<float, float> position;
         HitBox hitBox;
+        int getBoostShotsRemaining() const { return boostShotsRemaining; }
 
         Player(float x, float y) {
             this->position.first = x;
