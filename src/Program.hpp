@@ -33,6 +33,7 @@ class Program {
         float speedFactor = 1;
         //this variable controls the boost bar
         int blinkPhase = 0;
+        
 
         // Tracks if music has started
         
@@ -50,6 +51,8 @@ class Program {
         static bool boostActivated;
         static int scoreAfterBoost;
         static bool playerHit;
+        //Cooldown for boost
+        static int boostCooldown;
 
         Program();
 

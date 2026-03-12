@@ -81,8 +81,9 @@ void Player::activateBoost() {
     if (Program::barFull && boostShotsRemaining == 0) {
         PlaySound(SoundManager::boostShot);
         Program::boostActivated = true;
-
+        Program::boostCooldown = 2.5*60;
         boostShotsRemaining = 5;   // total arcs to fire
         boostDelay = 0;            // fire first immediately
     }
+
 }
